@@ -39,6 +39,21 @@ public class LombokAugmentProvider extends PsiAugmentProvider {
   @NotNull
   @Override
   public <Psi extends PsiElement> List<Psi> getAugments(@NotNull PsiElement element, @NotNull Class<Psi> type) {
+    long start = 0;
+    try {
+      start = System.nanoTime();
+      return getAugments2(element, type);
+    } finally {
+      if (element instanceof PsiClass) {
+        long time = System.nanoTime() - start;
+        log.info(String.format("Time: %d Type: %s Class: %s", time, type, ((PsiClass) element).getQualifiedName()));
+      }
+    }
+  }
+
+  @NotNull
+//  @Override
+  public <Psi extends PsiElement> List<Psi> getAugments2(@NotNull PsiElement element, @NotNull Class<Psi> type) {
     final List<Psi> emptyResult = Collections.emptyList();
     // Expecting that we are only augmenting an PsiClass
     // Don't filter !isPhysical elements or code auto completion will not work

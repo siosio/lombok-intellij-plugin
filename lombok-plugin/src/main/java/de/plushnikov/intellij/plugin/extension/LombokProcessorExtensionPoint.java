@@ -12,6 +12,10 @@ import java.util.Collection;
 public class LombokProcessorExtensionPoint {
   public static final ExtensionPointName<Processor> EP_NAME = ExtensionPointName.create("Lombook Plugin.processor");
 
+//  public static final ExtensionPointName<ClassProcessor> CLASS_EP_NAME = ExtensionPointName.create("Lombook Plugin.processor");
+//  public static final ExtensionPointName<FieldProcessor> FIELD_EP_NAME = ExtensionPointName.create("Lombook Plugin.processor");
+//  public static final ExtensionPointName<MethodProcessor> METHOD_EP_NAME = ExtensionPointName.create("Lombook Plugin.processor");
+
   private static Collection<String> LOMBOK_ANNOTATIONS;
 
   public static Collection<String> getAllOfProcessedLombokAnnotation() {
