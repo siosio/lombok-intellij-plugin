@@ -9,17 +9,14 @@ import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.augment.PsiAugmentProvider;
-import de.plushnikov.intellij.plugin.extension.LombokProcessorExtensionPoint;
+import de.plushnikov.intellij.plugin.extension.LombokProcessorService;
 import de.plushnikov.intellij.plugin.extension.UserMapKeys;
-import de.plushnikov.intellij.plugin.processor.Processor;
 import de.plushnikov.intellij.plugin.settings.ProjectSettings;
 import de.plushnikov.intellij.plugin.util.PsiClassUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
@@ -31,6 +28,8 @@ import java.util.Scanner;
  */
 public class LombokAugmentProvider extends PsiAugmentProvider {
   private static final Logger log = Logger.getInstance(LombokAugmentProvider.class.getName());
+
+  private LombokProcessorService processorService = new LombokProcessorService();
 
   public LombokAugmentProvider() {
     log.debug("LombokAugmentProvider created");
@@ -97,13 +96,15 @@ public class LombokAugmentProvider extends PsiAugmentProvider {
 
       cleanAttributeUsage(psiClass);
 
-      final List<Psi> result = new ArrayList<Psi>();
-      for (Processor processor : LombokProcessorExtensionPoint.EP_NAME.getExtensions()) {
-        if (processor.canProduce(type) && processor.isEnabled(project)) {
-          result.addAll((Collection<Psi>) processor.process(psiClass));
-        }
-      }
-      return result;
+      return processorService.processFor(psiClass, type);
+
+//      final List<Psi> result = new ArrayList<Psi>();
+//      for (Processor processor : LombokProcessorExtensionPoint.EP_NAME.getExtensions()) {
+//        if (processor.canProduce(type) && processor.isEnabled(project)) {
+//          result.addAll((Collection<Psi>) processor.process(psiClass));
+//        }
+//      }
+//      return result;
     } else {
       if (log.isDebugEnabled()) {
         log.debug(String.format("Skipped call for type: %s class: %s", type, psiClass.getQualifiedName()));

@@ -38,12 +38,16 @@ public abstract class AbstractMethodProcessor extends AbstractProcessor implemen
     for (PsiMethod psiMethod : PsiClassUtil.collectClassMethodsIntern(psiClass)) {
       PsiAnnotation psiAnnotation = PsiAnnotationUtil.findAnnotation(psiMethod, getSupportedAnnotation());
       if (null != psiAnnotation) {
-        if (validate(psiAnnotation, psiMethod, ProblemEmptyBuilder.getInstance())) {
-          processIntern(psiMethod, psiAnnotation, result);
-        }
+        process(psiMethod, psiAnnotation, result);
       }
     }
     return result;
+  }
+
+  public void process(PsiMethod psiMethod, PsiAnnotation psiAnnotation, List<? super PsiElement> result) {
+    if (validate(psiAnnotation, psiMethod, ProblemEmptyBuilder.getInstance())) {
+      processIntern(psiMethod, psiAnnotation, result);
+    }
   }
 
   @NotNull
