@@ -26,11 +26,9 @@
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
         <module name="lombok-api" />
-        <module name="lombok-test" />
-        <module name="lombok_pg-manual-test" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
+    <bytecodeTargetLevel target="1.6">
       <module name="lombok-api" target="1.6" />
       <module name="lombok-intellij-plugin" target="1.6" />
       <module name="lombok-manual-test" target="1.6" />

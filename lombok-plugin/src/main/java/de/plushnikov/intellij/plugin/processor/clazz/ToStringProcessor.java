@@ -16,18 +16,15 @@ import de.plushnikov.intellij.plugin.extension.UserMapKeys;
 import de.plushnikov.intellij.plugin.problem.ProblemBuilder;
 import de.plushnikov.intellij.plugin.psi.LombokLightMethodBuilder;
 import de.plushnikov.intellij.plugin.quickfix.PsiQuickFixFactory;
-import de.plushnikov.intellij.plugin.thirdparty.LombokUtils;
 import de.plushnikov.intellij.plugin.util.PsiAnnotationUtil;
 import de.plushnikov.intellij.plugin.util.PsiClassUtil;
 import de.plushnikov.intellij.plugin.util.PsiFieldUtil;
 import de.plushnikov.intellij.plugin.util.PsiMethodUtil;
 import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -105,7 +102,7 @@ public class ToStringProcessor extends AbstractClassProcessor {
         .withModifier(PsiModifier.PUBLIC);
 
     final String paramString = createParamString(psiClass, psiAnnotation);
-    final String blockText = String.format("return \"%s(%s)\";", psiClass.getName(), paramString);
+    final String blockText = String.format("return \"%s(%s)\";", psiClass.getQualifiedName(), paramString);
     method.withBody(PsiMethodUtil.createCodeBlockFromText(blockText, psiClass));
 
     Collection<PsiField> toStringFields = PsiFieldUtil.filterFieldsByModifiers(psiClass.getFields(), PsiModifier.STATIC);
@@ -116,10 +113,8 @@ public class ToStringProcessor extends AbstractClassProcessor {
 
   private String createParamString(@NotNull PsiClass psiClass, @NotNull PsiAnnotation psiAnnotation) {
     final boolean includeFieldNames = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "includeFieldNames", Boolean.class, Boolean.TRUE);
-    final boolean callSuper = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "includeFieldNames", Boolean.class, Boolean.FALSE);
+    final boolean callSuper = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "callSuper", Boolean.class, Boolean.FALSE);
     final boolean doNotUseGetters = PsiAnnotationUtil.getAnnotationValue(psiAnnotation, "doNotUseGetters", Boolean.class, Boolean.FALSE);
-    final Collection<String> excludeProperty = makeSet(PsiAnnotationUtil.getAnnotationValues(psiAnnotation, "exclude", String.class));
-    final Collection<String> ofProperty = makeSet(PsiAnnotationUtil.getAnnotationValues(psiAnnotation, "of", String.class));
 
     final StringBuilder paramString = StringBuilderSpinAllocator.alloc();
     try {
@@ -127,21 +122,9 @@ public class ToStringProcessor extends AbstractClassProcessor {
         paramString.append("super=\" + super.toString() + \", ");
       }
 
-      final Collection<PsiField> psiFields = PsiClassUtil.collectClassFieldsIntern(psiClass);
+      final Collection<PsiField> psiFields = filterFields(psiClass, psiAnnotation, false);
       for (PsiField classField : psiFields) {
         final String fieldName = classField.getName();
-        if (fieldName.startsWith(LombokUtils.LOMBOK_INTERN_FIELD_MARKER)) {
-          continue;
-        }
-        if (classField.hasModifierProperty(PsiModifier.STATIC)) {
-          continue;
-        }
-        if (excludeProperty.contains(fieldName)) {
-          continue;
-        }
-        if (!ofProperty.isEmpty() && !ofProperty.contains(fieldName)) {
-          continue;
-        }
 
         if (includeFieldNames) {
           paramString.append(fieldName).append('=');
@@ -158,11 +141,8 @@ public class ToStringProcessor extends AbstractClassProcessor {
           }
         }
 
-        if (doNotUseGetters) {
-          paramString.append(fieldName);
-        } else {
-          paramString.append(LombokUtils.toGetterName(fieldName, PsiType.BOOLEAN.equals(classField.getType()))).append("()");
-        }
+        final String fieldAccessor = buildAttributeNameString(doNotUseGetters, classField, psiClass);
+        paramString.append("this.").append(fieldAccessor);
 
         if (classFieldType instanceof PsiArrayType) {
           paramString.append(")");
@@ -170,17 +150,13 @@ public class ToStringProcessor extends AbstractClassProcessor {
 
         paramString.append("+\", ");
       }
-      paramString.delete(paramString.length() - 2, paramString.length());
+      if (paramString.length() > 2) {
+        paramString.delete(paramString.length() - 2, paramString.length());
+      }
       return paramString.toString();
     } finally {
       StringBuilderSpinAllocator.dispose(paramString);
     }
   }
 
-  private Collection<String> makeSet(@Nullable Collection<String> exclude) {
-    if (null == exclude || exclude.isEmpty()) {
-      return Collections.emptySet();
-    }
-    return new HashSet<String>(exclude);
-  }
 }

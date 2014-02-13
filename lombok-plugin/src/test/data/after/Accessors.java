@@ -84,12 +84,35 @@ class AccessorsPrefix3 {
 	@java.lang.Override
 	@java.lang.SuppressWarnings("all")
 	public int hashCode() {
-		final int PRIME = 31;
+		final int PRIME = 59;
 		int result = 1;
 		final java.lang.Object $fName = this.getName();
 		result = result * PRIME + ($fName == null ? 0 : $fName.hashCode());
 		return result;
 	}
+}
+class AccessorsPrefix4 {
+  private String _underscore;
+  private String $DollarSign;
+  private String m_fieldName;
+  private String foo;
+  private String bAr;
+  @java.lang.SuppressWarnings("all")
+  public void setUnderscore(final String _underscore) {
+    this._underscore = _underscore;
+  }
+  @java.lang.SuppressWarnings("all")
+  public void setDollarSign(final String $DollarSign) {
+    this.$DollarSign = $DollarSign;
+  }
+  @java.lang.SuppressWarnings("all")
+  public void setFieldName(final String m_fieldName) {
+    this.m_fieldName = m_fieldName;
+  }
+  @java.lang.SuppressWarnings("all")
+  public void setAr(final String bAr) {
+    this.bAr = bAr;
+  }
 }
 class AccessorsFluentGenerics<T extends Number> {
 	private String name;
