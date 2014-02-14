@@ -10,7 +10,7 @@ public abstract class ProcessorKey {
     if (this == o) {
       return true;
     }
-    if (o == null || getClass() != o.getClass()) {
+    if (o == null || !(o instanceof ProcessorKey)) {
       return false;
     }
 
