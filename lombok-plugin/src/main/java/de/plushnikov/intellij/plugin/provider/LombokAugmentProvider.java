@@ -4,6 +4,7 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
@@ -38,10 +39,15 @@ public class LombokAugmentProvider extends PsiAugmentProvider {
   @NotNull
   @Override
   public <Psi extends PsiElement> List<Psi> getAugments(@NotNull PsiElement element, @NotNull Class<Psi> type) {
+    if (type.isAssignableFrom(PsiAnnotation.class)) {
+      return Collections.emptyList();
+    }
+
     long start = 0;
     try {
       start = System.nanoTime();
-      return getAugments2(element, type);
+      List<Psi> augments2 = getAugments2(element, type);
+      return augments2;
     } finally {
       if (element instanceof PsiClass) {
         long time = System.nanoTime() - start;
@@ -96,6 +102,7 @@ public class LombokAugmentProvider extends PsiAugmentProvider {
 
       cleanAttributeUsage(psiClass);
 
+      processorService.init();
       return processorService.processFor(psiClass, type);
 
 //      final List<Psi> result = new ArrayList<Psi>();
