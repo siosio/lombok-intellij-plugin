@@ -3,7 +3,7 @@
   <id>Lombook Plugin</id>
   <name>Lombok Plugin</name>
   <vendor url="https://github.com/mplushnikov/lombok-intellij-plugin" email="lombokplugin@plushnikov.de">Michail Plushnikov</vendor>
-  <version>0.8.1</version>
+  <version>0.8.2</version>
   <idea-version since-build="123.72"/>
 
   <description><![CDATA[
@@ -64,6 +64,7 @@
     <processor implementation="de.plushnikov.intellij.plugin.processor.field.SetterFieldProcessor"/>
     <processor implementation="de.plushnikov.intellij.plugin.processor.field.WitherFieldProcessor"/>
 
+    <processor implementation="de.plushnikov.intellij.plugin.processor.method.DelegateMethodProcessor"/>
     <processor implementation="de.plushnikov.intellij.plugin.processor.method.BuilderMethodProcessor"/>
     <processor implementation="de.plushnikov.intellij.plugin.processor.method.BuilderMethodInnerClassProcessor"/>
 
@@ -118,6 +119,9 @@
       <action id="delombokWither" class="de.plushnikov.intellij.plugin.action.delombok.DelombokWitherAction"
               text="@Wither" description="Action to replace lombok @Wither annotation with vanilla java methods">
       </action>
+      <action id="delombokDelegate" class="de.plushnikov.intellij.plugin.action.delombok.DelombokDelegateAction"
+              text="@Delegate" description="Action to replace lombok @Delegate annotation with vanilla java methods">
+      </action>
       <separator/>
       <action id="delombokConstructor" class="de.plushnikov.intellij.plugin.action.delombok.DelombokConstructorAction"
               text="@Constructors"
@@ -145,11 +149,20 @@
   </actions>
 
   <!--<li>TODO: Add generate actions for Lombok equals/hashcode, toString, getter, setter, constructor and maybe logger method</li>-->
-  <!--<li>TODO: Add delombok action for @Delegate, @Cleanup, @Synchronized and other annotations</li>-->
+  <!--<li>TODO: Add delombok action for @Cleanup, @Synchronized and other annotations</li>-->
   <change-notes><![CDATA[
 		<ul>
+		<li>0.8.2
+				<ol>
+				    <li>Added validation of static fields/methods of @Delegate annotation (@Delegate is legal only on instance fields or no-argument instance methods)</li>
+				    <li>Fixed #31: Prevent errors with invalid identifiers for builderClassName in @Builder annotation</li>
+				</ol>
+			</li>
 		<li>0.8.1
 				<ol>
+				    <li>Issue (on Git) #23: Fixed @Delegate inspection reports error</li>
+				    <li>Issue (on Git) #27: Fixed @Delegate on a type parameter doesn't fail</li>
+				    <li>Issue #60: Fixed @Delegate on methods is not supported now</li>
 				    <li>Issue #98: Fixed Lombok Experimental Accessor Prefix does not handle non-alphanumeric prefixes</li>
 				</ol>
 			</li>

@@ -4,13 +4,8 @@ import de.plushnikov.lombok.LombokParsingTestCase;
 
 /**
  * Unit tests for IntelliJPlugin for Lombok, based on lombok test classes
- * For this to work, the correct system property idea.home.path needs to be passed to the test runner.
  */
 public class DelegateTestCase extends LombokParsingTestCase {
-
-  protected boolean shouldCompareCodeBlocks() {
-    return false;
-  }
 
   public void testDelegateOnGetter() throws Exception {
     //TODO known problem, try to fix later
@@ -22,7 +17,6 @@ public class DelegateTestCase extends LombokParsingTestCase {
   }
 
   public void testDelegateOnMethods() throws Exception {
-    //TODO known problem, try to fix later
     doTest();
   }
 
@@ -35,6 +29,10 @@ public class DelegateTestCase extends LombokParsingTestCase {
   }
 
   public void testDelegateWithDeprecated() throws Exception {
+    doTest();
+  }
+
+  public void testDelegateWithException() throws Exception {
     doTest();
   }
 }
