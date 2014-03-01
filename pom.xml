@@ -11,6 +11,7 @@
 
   <modules>
     <module>lombok-api</module>
+    <module>lombok-agent</module>
   </modules>
 
   <properties>

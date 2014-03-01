@@ -25,10 +25,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
+        <module name="lombok-agent" />
         <module name="lombok-api" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.6">
+      <module name="lombok-agent" target="1.6" />
       <module name="lombok-api" target="1.6" />
       <module name="lombok-intellij-plugin" target="1.6" />
       <module name="lombok-manual-test" target="1.6" />
