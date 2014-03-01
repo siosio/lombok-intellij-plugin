@@ -25,8 +25,15 @@ public class LombokLoader implements ApplicationComponent {
 
     LOG.info("pre injection");
     System.setProperty("lombok.patcher.safeInject", "true");
-    LiveInjector liveInjector = new LiveInjector();
-    liveInjector.inject(ClassRootFinder.findClassRootOfClass(IdeaPatcher.class));
+    String rootOfClass = ClassRootFinder.findClassRootOfClass(IdeaPatcher.class);
+    rootOfClass = rootOfClass.substring(1);
+    System.out.println("Use RootOfClass: " + rootOfClass);
+    try {
+      LiveInjector liveInjector = new LiveInjector();
+      liveInjector.inject(rootOfClass);
+    } catch (Exception ex) {
+      LOG.error(ex);
+    }
     LOG.info("post injection");
   }
 
