@@ -4,11 +4,11 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.DumbService;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.psi.PsiAnnotation;
 import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiElement;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiFile;
+import com.intellij.psi.PsiMethod;
 import com.intellij.psi.augment.PsiAugmentProvider;
 import de.plushnikov.intellij.plugin.extension.LombokProcessorService;
 import de.plushnikov.intellij.plugin.extension.UserMapKeys;
@@ -30,41 +30,28 @@ import java.util.Scanner;
 public class LombokAugmentProvider extends PsiAugmentProvider {
   private static final Logger log = Logger.getInstance(LombokAugmentProvider.class.getName());
 
-  private LombokProcessorService processorService = new LombokProcessorService();
+  private LombokProcessorService processorService;
 
   public LombokAugmentProvider() {
-    log.debug("LombokAugmentProvider created");
+    processorService = new LombokProcessorService();
+    processorService.init();
   }
 
   @NotNull
   @Override
   public <Psi extends PsiElement> List<Psi> getAugments(@NotNull PsiElement element, @NotNull Class<Psi> type) {
-    if (type.isAssignableFrom(PsiAnnotation.class)) {
-      return Collections.emptyList();
-    }
-
-    long start = 0;
-    try {
-      start = System.nanoTime();
-      List<Psi> augments2 = getAugments2(element, type);
-      return augments2;
-    } finally {
-      if (element instanceof PsiClass) {
-        long time = System.nanoTime() - start;
-        log.info(String.format("Time: %d Type: %s Class: %s", time, type, ((PsiClass) element).getQualifiedName()));
-      }
-    }
-  }
-
-  @NotNull
-//  @Override
-  public <Psi extends PsiElement> List<Psi> getAugments2(@NotNull PsiElement element, @NotNull Class<Psi> type) {
     final List<Psi> emptyResult = Collections.emptyList();
     // Expecting that we are only augmenting an PsiClass
     // Don't filter !isPhysical elements or code auto completion will not work
     if (!(element instanceof PsiClass) || !element.isValid()) {
       return emptyResult;
     }
+
+    // skip processing for other as supported types
+    if (!(type.isAssignableFrom(PsiMethod.class) || type.isAssignableFrom(PsiField.class) || type.isAssignableFrom(PsiClass.class))) {
+      return emptyResult;
+    }
+
     // skip processing during index rebuild
     final Project project = element.getProject();
     if (DumbService.getInstance(project).isDumb()) {
@@ -99,19 +86,9 @@ public class LombokAugmentProvider extends PsiAugmentProvider {
       if (log.isDebugEnabled()) {
         log.debug(String.format("Process call for type: %s class: %s", type, psiClass.getQualifiedName()));
       }
-
       cleanAttributeUsage(psiClass);
 
-      processorService.init();
       return processorService.processFor(psiClass, type);
-
-//      final List<Psi> result = new ArrayList<Psi>();
-//      for (Processor processor : LombokProcessorExtensionPoint.EP_NAME.getExtensions()) {
-//        if (processor.canProduce(type) && processor.isEnabled(project)) {
-//          result.addAll((Collection<Psi>) processor.process(psiClass));
-//        }
-//      }
-//      return result;
     } else {
       if (log.isDebugEnabled()) {
         log.debug(String.format("Skipped call for type: %s class: %s", type, psiClass.getQualifiedName()));

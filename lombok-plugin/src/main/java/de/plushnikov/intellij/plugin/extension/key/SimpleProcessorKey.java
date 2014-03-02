@@ -20,4 +20,13 @@ public class SimpleProcessorKey extends ProcessorKey {
   protected String getQualifiedName() {
     return fqName;
   }
+
+  @Override
+  public String toString() {
+    final StringBuilder sb = new StringBuilder("SimpleProcessorKey{");
+    sb.append("name='").append(getName()).append('\'');
+    sb.append(", fqName='").append(getQualifiedName()).append('\'');
+    sb.append('}');
+    return sb.toString();
+  }
 }

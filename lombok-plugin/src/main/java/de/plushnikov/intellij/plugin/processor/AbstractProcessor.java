@@ -86,6 +86,11 @@ public abstract class AbstractProcessor implements Processor {
   }
 
   @NotNull
+  public List<? super PsiElement> process(@NotNull PsiAnnotation psiAnnotation) {
+    return Collections.emptyList();
+  }
+
+  @NotNull
   public abstract Collection<PsiAnnotation> collectProcessedAnnotations(@NotNull PsiClass psiClass);
 
   protected String getGetterName(final @NotNull PsiField psiField) {
