@@ -13,7 +13,6 @@
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" scope="RUNTIME" name="lombok.patcher-0.12" level="project" />
     <orderEntry type="library" name="Maven: org.projectlombok:lombok.patcher:0.12" level="project" />
-    <orderEntry type="library" name="Maven: org.projectlombok:lombok.injector:0.12" level="project" />
   </component>
   <component name="POM File Configuration" pomFile="" />
 </module>

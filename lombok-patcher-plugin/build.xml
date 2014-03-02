@@ -1,0 +1,35 @@
+<project name="lombok pathcer plugin" default="dist" basedir=".">
+  <description>
+    Lombok Patcher Plugin
+  </description>
+
+  <property name="workDir" value="target"/>
+  <property name="pluginName" value="lombok-patcher-plugin"/>
+
+  <property name="pluginZipFile" value="${pluginName}.zip"/>
+  <property name="pluginJar1" value="${pluginName}.jar"/>
+  <property name="pluginJar2" value="lombok-agent-1.0-jar-with-dependencies.jar"/>
+
+  <target name="dist" description="generate the distribution" depends="clean">
+    <mkdir dir="target"/>
+
+    <unzip src="${pluginZipFile}" dest="${workDir}"/>
+
+    <jar destfile="${pluginName}-with-deps.jar">
+      <zipgroupfileset dir="${workDir}/${pluginName}/lib" includes="*.jar"/>
+      <!-- other options -->
+      <manifest>
+        <attribute name="Agent-Class" value="de.plushnikov.intellij.plugin.agent.IdeaPatcher"/>
+        <attribute name="Premain-Class" value="de.plushnikov.intellij.plugin.agent.IdeaPatcher"/>
+        <attribute name="Can-Redefine-Classes" value="true"/>
+        <attribute name="Can-Retransform-Classes" value="true"/>
+      </manifest>
+    </jar>
+
+    <antcall target="clean"/>
+  </target>
+
+  <target name="clean" description="clean up">
+    <delete dir="${workDir}"/>
+  </target>
+</project>

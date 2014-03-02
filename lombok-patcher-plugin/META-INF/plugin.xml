@@ -1,18 +1,20 @@
-<idea-plugin version="2">
+<?xml version="1.0" encoding="UTF-8"?>
+<idea-plugin version="2" url="http://code.google.com/p/lombok-intellij-plugin">
   <id>lombok.patcher</id>
+  <name>Lombok Patcher Plugin</name>
+  <vendor url="https://github.com/mplushnikov/lombok-intellij-plugin" email="lombokplugin@plushnikov.de">Michail Plushnikov</vendor>
+  <version>0.8.2</version>
+  <idea-version since-build="123.72"/>
+
   <description><![CDATA[
-    A plugin that adds extra extension points to provide better Project Lombok support
-    ]]>
+    A plugin that patches IntelliJ for Project Lombok support]]>
   </description>
+  <category>Tools Integration</category>
 
   <application-components>
     <component>
       <implementation-class>de.plushnikov.intellij.plugin.LombokPatcherLoader</implementation-class>
     </component>
   </application-components>
-
-  <extensionPoints>
-    <extensionPoint name="extraExceptionHandler" interface="de.plushnikov.intellij.plugin.handler.ExtraExceptionHandler"/>
-  </extensionPoints>
 
 </idea-plugin>
