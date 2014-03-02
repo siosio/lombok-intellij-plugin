@@ -1,19 +1,4 @@
-/*
- * Copyright 2013 Consulo.org
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-package de.plushnikov.intellij.plugin.agent.handler;
+package de.plushnikov.intellij.plugin.handler;
 
 import com.intellij.codeInsight.AnnotationUtil;
 import com.intellij.psi.PsiAnnotation;
@@ -27,25 +12,26 @@ import com.intellij.psi.PsiMethod;
 import com.intellij.psi.PsiType;
 import com.intellij.psi.PsiTypeElement;
 import com.intellij.psi.util.PsiTreeUtil;
-import de.plushnikov.intellij.plugin.handler.ExtraExceptionHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author VISTALL
- * @since 23:49/30.03.13
- */
-public class SneakyTrowsExceptionHandler implements ExtraExceptionHandler {
-  @Override
-  public boolean isHandled(@NotNull PsiClassType type, @NotNull PsiElement element, PsiElement topElement) {
-//    if (!ProjectSettings.loadAndGetEnabledInProject(element.getProject())) {
-//      return emptyResult;
-//    }
+public class SneakyTrowsExceptionHandler {
+  public static boolean wrapReturnValue(boolean originalHandled, PsiElement element, PsiClassType exceptionType, PsiElement topElement) {
+    if (originalHandled) {
+      return originalHandled;
+    }
 
-    System.out.println("Called for " + element);
+    if (element == null || element.getParent() == topElement || element.getParent() == null) {
+      return false;
+    }
 
+    return new SneakyTrowsExceptionHandler().isHandled(exceptionType, element, topElement);
+  }
+
+
+  protected boolean isHandled(@NotNull PsiClassType type, @NotNull PsiElement element, PsiElement topElement) {
     final PsiMethod parent = PsiTreeUtil.getParentOfType(element, PsiMethod.class);
     if (parent == null) {
       return false;

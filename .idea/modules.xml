@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/lombok-agent/lombok-agent.iml" filepath="$PROJECT_DIR$/lombok-agent/lombok-agent.iml" />
       <module fileurl="file://$PROJECT_DIR$/lombok-api/lombok-api.iml" filepath="$PROJECT_DIR$/lombok-api/lombok-api.iml" />
       <module fileurl="file://$PROJECT_DIR$/lombok-intellij-plugin.iml" filepath="$PROJECT_DIR$/lombok-intellij-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/lombok-patcher-plugin/lombok-patcher-plugin.iml" filepath="$PROJECT_DIR$/lombok-patcher-plugin/lombok-patcher-plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/lombok-plugin/lombok-plugin.iml" filepath="$PROJECT_DIR$/lombok-plugin/lombok-plugin.iml" />
     </modules>
   </component>

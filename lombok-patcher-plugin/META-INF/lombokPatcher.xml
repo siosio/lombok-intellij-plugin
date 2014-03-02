@@ -1,0 +1,17 @@
+<idea-plugin>
+  <description><![CDATA[
+    A plugin that adds extra extension points to provide better Project Lombok support
+    ]]>
+  </description>
+
+  <application-components>
+    <component>
+      <implementation-class>de.plushnikov.intellij.plugin.LombokPatcherLoader</implementation-class>
+    </component>
+  </application-components>
+
+  <extensionPoints>
+    <extensionPoint name="extraExceptionHandler" interface="de.plushnikov.intellij.plugin.handler.ExtraExceptionHandler"/>
+  </extensionPoints>
+
+</idea-plugin>

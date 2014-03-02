@@ -39,11 +39,10 @@ public class IdeaPatcher {
 
   private static void patchIntellij(ScriptManager sm) {
     System.out.println("patching ....");
-    // TODO
 
     sm.addScript(ScriptBuilder.wrapReturnValue()
         .target(new MethodTarget("com.intellij.codeInsight.ExceptionUtil", "isHandled", "boolean", "com.intellij.psi.PsiElement", "com.intellij.psi.PsiClassType", "com.intellij.psi.PsiElement"))
-        .wrapMethod(new Hook("de.plushnikov.intellij.plugin.agent.handler.ExtraExceptionHandlerLogik", "wrapReturnValue", "boolean", "boolean", "com.intellij.psi.PsiElement", "com.intellij.psi.PsiClassType", "com.intellij.psi.PsiElement"))
+        .wrapMethod(new Hook("de.plushnikov.intellij.plugin.handler.SneakyTrowsExceptionHandler", "wrapReturnValue", "boolean", "boolean", "com.intellij.psi.PsiElement", "com.intellij.psi.PsiClassType", "com.intellij.psi.PsiElement"))
         .request(StackRequest.RETURN_VALUE, StackRequest.PARAM1, StackRequest.PARAM2, StackRequest.PARAM3)
         .build());
 

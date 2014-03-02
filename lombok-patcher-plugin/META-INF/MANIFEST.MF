@@ -1,0 +1,5 @@
+Manifest-Version: 1.0
+Agent-Class: de.plushnikov.intellij.plugin.agent.IdeaPatcher
+Premain-Class: de.plushnikov.intellij.plugin.agent.IdeaPatcher
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
