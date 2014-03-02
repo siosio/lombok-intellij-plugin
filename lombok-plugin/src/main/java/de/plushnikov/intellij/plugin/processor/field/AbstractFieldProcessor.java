@@ -46,10 +46,20 @@ public abstract class AbstractFieldProcessor extends AbstractProcessor implement
     return result;
   }
 
-  public void process(PsiField psiField, PsiAnnotation psiAnnotation, List<? super PsiElement> target) {
+  @NotNull
+  public List<? super PsiElement> process(@NotNull PsiAnnotation psiAnnotation) {
+    final PsiField psiField = PsiTreeUtil.getContextOfType(psiAnnotation, PsiField.class, true);
+    if (null != psiField) {
+      return process(psiField, psiAnnotation, new ArrayList<PsiElement>());
+    }
+    return Collections.emptyList();
+  }
+
+  public List<? super PsiElement> process(PsiField psiField, PsiAnnotation psiAnnotation, List<? super PsiElement> target) {
     if (validate(psiAnnotation, psiField, ProblemEmptyBuilder.getInstance())) {
       generatePsiElements(psiField, psiAnnotation, target);
     }
+    return target;
   }
 
   @NotNull

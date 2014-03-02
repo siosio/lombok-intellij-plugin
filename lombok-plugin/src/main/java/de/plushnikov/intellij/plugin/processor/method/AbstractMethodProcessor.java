@@ -44,10 +44,20 @@ public abstract class AbstractMethodProcessor extends AbstractProcessor implemen
     return result;
   }
 
-  public void process(PsiMethod psiMethod, PsiAnnotation psiAnnotation, List<? super PsiElement> result) {
+  @NotNull
+  public List<? super PsiElement> process(@NotNull PsiAnnotation psiAnnotation) {
+    final PsiMethod psiMethod = PsiTreeUtil.getContextOfType(psiAnnotation, PsiMethod.class, true);
+    if (null != psiMethod) {
+      return process(psiMethod, psiAnnotation, new ArrayList<PsiElement>());
+    }
+    return Collections.emptyList();
+  }
+
+  public List<? super PsiElement> process(PsiMethod psiMethod, PsiAnnotation psiAnnotation, List<? super PsiElement> result) {
     if (validate(psiAnnotation, psiMethod, ProblemEmptyBuilder.getInstance())) {
       processIntern(psiMethod, psiAnnotation, result);
     }
+    return result;
   }
 
   @NotNull

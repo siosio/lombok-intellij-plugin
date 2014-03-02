@@ -51,6 +51,16 @@ public abstract class AbstractClassProcessor extends AbstractProcessor implement
     return result;
   }
 
+  @NotNull
+  public List<? super PsiElement> process(@NotNull PsiAnnotation psiAnnotation) {
+    // check first for fields, methods and filter it out, because PsiClass is parent of all annotations and will match other parents too
+    PsiElement psiElement = PsiTreeUtil.getParentOfType(psiAnnotation, PsiField.class, PsiMethod.class, PsiClass.class);
+    if (psiElement instanceof PsiClass) {
+      return process((PsiClass) psiElement, psiAnnotation, new ArrayList<PsiElement>());
+    }
+    return Collections.emptyList();
+  }
+
   public List<? super PsiElement> process(PsiClass psiClass, PsiAnnotation psiAnnotation, List<? super PsiElement> result) {
     if (validate(psiAnnotation, psiClass, ProblemEmptyBuilder.getInstance())) {
       generatePsiElements(psiClass, psiAnnotation, result);
